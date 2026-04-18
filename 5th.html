@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splendor+ Care Master Pro</title>
+    <style>
+        :root { 
+            --hero-red: #ed1c24; 
+            --hero-grad: linear-gradient(135deg, #ed1c24 0%, #a31116 100%);
+            --bg: #121212; 
+            --card-bg: #1e1e1e; 
+            --text-main: #e2e8f0; 
+            --text-dim: #94a3b8;
+            --success: #10b981; 
+            --danger: #ef4444;
+            --input-bg: #2d2d2d;
+            --border: #333333;
+            --instr-blue: #00d2ff;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            padding-bottom: 40px; 
+            color: var(--text-main);
+        }
+        
+        header { 
+            background: var(--hero-grad); 
+            color: white; 
+            padding: 30px 20px; 
+            text-align: center; 
+            border-radius: 0 0 25px 25px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        header h1 { margin: 0; font-size: 22px; font-weight: 800; }
+        header p { margin: 4px 0 0; font-size: 13px; opacity: 0.9; }
+
+        #notifBanner { 
+            display: none; background: #2d1a1a; color: #ff8080; border: 1px solid #4a1a1a;
+            padding: 12px; margin: 15px auto; width: 88%; border-radius: 12px; 
+            font-weight: 700; font-size: 13px; text-align: center; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        .container { width: 92%; max-width: 450px; margin: auto; }
+
+        .card { 
+            background: var(--card-bg); padding: 20px; border-radius: 18px; 
+            margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
+
+        .label-tiny { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 8px; text-align: center; }
+        
+        input[type="number"]#mainOdo { 
+            font-size: 28px; width: 100%; padding: 12px; border: 1px solid var(--border); 
+            background: var(--input-bg); border-radius: 12px; text-align: center; 
+            font-weight: 800; color: var(--hero-red); outline: none; box-sizing: border-box;
+        }
+
+        .part-row { margin: 18px 0; border-bottom: 1px solid #2a2a2a; padding-bottom: 15px; }
+        .part-row:last-child { border-bottom: none; }
+        .part-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 700; font-size: 14px; }
+        .part-instr { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; display: block; font-weight: 500; }
+        .part-price { font-size: 11px; color: var(--success); font-weight: 700; margin-bottom: 10px; display: block; }
+        
+        .progress-bg { background: #333; height: 10px; border-radius: 5px; overflow: hidden; margin-bottom: 10px; }
+        .progress-fill { height: 100%; transition: width 0.6s ease; }
+
+        .details-btn { background: none; border: 1px solid #444; color: var(--instr-blue); font-size: 10px; padding: 4px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; margin-bottom: 5px; }
+        .details-content { display: none; background: #252525; padding: 10px; border-radius: 8px; font-size: 11px; color: #ccc; margin-top: 5px; line-height: 1.4; border-left: 2px solid var(--instr-blue); }
+
+        .total-box { background: #000000; color: white; padding: 20px; border-radius: 18px; text-align: center; margin-top: 15px; border: 1px solid var(--border); }
+        .total-box h2 { margin: 5px 0 0; font-size: 24px; color: var(--success); }
+
+        h3 { margin: 0 0 15px 0; font-size: 16px; color: var(--hero-red); border-left: 3px solid var(--hero-red); padding-left: 10px; }
+        
+        /* Fixed: Consolidated Input Sizing for Uniformity */
+        input[type="text"], input[type="number"].cost-input, input[type="number"]#customInterval { 
+            width: 100%; padding: 12px; margin: 6px 0 12px; border: 1px solid var(--border); 
+            border-radius: 10px; font-size: 14px; box-sizing: border-box; background: var(--input-bg); color: white;
+        }
+
+        .btn-save { width: 100%; background: var(--hero-red); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 10px; }
+        
+        .action-row { display: flex; gap: 10px; margin-top: 5px; }
+        .btn-alt { flex: 1; background: #333; color: var(--text-main); border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .btn-alt:disabled { opacity: 0.2; cursor: not-allowed; }
+
+        .btn-notif { width: 100%; background: #2d3436; color: var(--instr-blue); border: 1px solid var(--instr-blue); padding: 12px; border-radius: 10px; font-size: 12px; font-weight: bold; margin-top: 15px; cursor: pointer; text-transform: uppercase; }
+
+        .history-item { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .hist-task { font-weight: 700; font-size: 14px; color: var(--text-main); }
+        .hist-meta { font-size: 11px; color: var(--text-dim); }
+        .price { color: var(--success); font-weight: 800; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Splendor+ Master Pro</h1>
+    <p>Manual-Sync Dashboard</p>
+</header>
+
+<div id="notifBanner">🚨 MAINTENANCE DUE: CHECK RED BARS</div>
+
+<div class="container">
+    <div class="card">
+        <span class="label-tiny">Odometer Reading (KM)</span>
+        <input type="number" id="mainOdo" oninput="updateOdo(this.value)">
+        <button class="btn-notif" id="enableNotif" onclick="requestNotificationPermission()">🔔 SERVICE REMINDER</button>
+    </div>
+
+    <div class="card" id="partList"></div>
+
+    <div class="card">
+        <h3>➕ Add Custom Part</h3>
+        <input type="text" id="customTask" placeholder="Part Name (e.g., Seat Cover)">
+        <input type="number" id="customInterval" placeholder="Service Every ? KM (e.g., 5000)">
+        <button class="btn-save" style="background:#3b82f6" onclick="addCustomConfig()">ADD TO TRACKER</button>
+    </div>
+
+    <div class="total-box">
+        <span class="label-tiny" style="color: #64748b;">Total Investment</span>
+        <h2 id="totalCostDisplay">₹ 0</h2>
+    </div>
+
+    <div class="card">
+        <h3>Log New Service</h3>
+        <input type="text" id="logTask" placeholder="Part (e.g., Engine Oil, Chain)">
+        <input type="number" id="logCost" class="cost-input" placeholder="Service Cost (₹)">
+        <button class="btn-save" onclick="addService()">SAVE RECORD</button>
+        
+        <div class="action-row">
+            <button class="btn-alt" id="undoBtn" onclick="undo()">⬅️ UNDO</button>
+            <button class="btn-alt" id="redoBtn" onclick="redo()">REDO ➡️</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Service History</h3>
+        <div id="historyList"></div>
+    </div>
+</div>
+
+<script>
+    const defaultConfig = [
+        { task: "Engine Oil", interval: 6000, color: "#3b82f6", instr: "Refill 10W-30 SL.", price: "Est: ₹350-450", how: "1. Place bike on main stand. 2. Remove drain bolt at bottom. 3. Clean oil strainer and centrifugal filter. 4. Refill exactly 0.9 Liters of fresh oil." },
+        { task: "Air Filter", interval: 15000, color: "#8b5cf6", instr: "Replace element.", price: "Est: ₹180-250", how: "1. Open the right side cover. 2. Remove the air cleaner cover screws. 3. Take out the old viscous filter and put in a new genuine Hero filter. Do not clean it!" },
+        { task: "Spark Plug", interval: 3000, color: "#eab308", instr: "Clean carbon deposits.", price: "Est: ₹80-120", how: "1. Use spark plug wrench to remove. 2. Clean electrode with wire brush. 3. Adjust gap to 0.6-0.7mm. 4. Tighten back carefully." },
+        { task: "Drive Chain", interval: 2000, color: "#f97316", instr: "Lube with SAE 90 oil.", price: "Est: ₹50-100", how: "1. Rotate rear wheel and clean chain with brush. 2. Apply SAE 90 oil or gear oil. 3. Check slack (20-30 mm). Adjust if it hits the swingarm." },
+        { task: "Brake Shoes", interval: 3000, color: "#ef4444", instr: "Clean cam & adjust play.", price: "Est: ₹200-300", how: "1. Check the wear indicator mark on the hub. 2. If marker aligns with limit, replace shoes. 3. Adjust the brake nut so pedal has 20-30mm play." },
+        { task: "Fork Oil", interval: 30000, color: "#475569", instr: "Refill hydraulic oil.", price: "Est: ₹450-600", how: "This requires opening the front shocks. It is best done at a workshop to ensure 160ml oil per leg is refilled for smooth suspension." },
+        { task: "Chain Sprocket Kit", interval: 20000, color: "#f59e0b", instr: "Replace if teeth worn.", price: "Est: ₹800-1200", how: "Check if sprocket teeth look like 'sharks teeth' (sharp). If yes, replace both sprockets and the chain as a full set for safety." },
+        { task: "Cables", interval: 3000, color: "#06b6d4", instr: "Lubricate with oil.", price: "Est: ₹100-200", how: "Apply 2-3 drops of engine oil at the top of throttle and clutch cables. Ensure the clutch has 10-20mm free play at the lever." }
+    ];
+
+    let customConfigs = JSON.parse(localStorage.getItem('spl_custom_configs')) || [];
+    let odometer = localStorage.getItem('spl_odo') || 26965;
+    let history = JSON.parse(localStorage.getItem('spl_hist')) || [];
+    let redoStack = [];
+
+    document.getElementById('mainOdo').value = odometer;
+
+    function addCustomConfig() {
+        const name = document.getElementById('customTask').value;
+        const interval = document.getElementById('customInterval').value;
+        if(!name || !interval) return;
+        customConfigs.push({ task: name, interval: parseInt(interval), color: "#94a3b8", instr: "Custom Maintenance", price: "N/A", how: "Check the manual for your specific custom part." });
+        localStorage.setItem('spl_custom_configs', JSON.stringify(customConfigs));
+        render();
+    }
+
+    function toggleDetails(index) {
+        const content = document.getElementById('details-' + index);
+        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function updateOdo(val) {
+        odometer = parseInt(val) || 0;
+        localStorage.setItem('spl_odo', odometer);
+        render();
+    }
+
+    function addService() {
+        const task = document.getElementById('logTask').value;
+        const cost = document.getElementById('logCost').value;
+        if(!task || !cost) return;
+        redoStack = []; 
+        history.push({ task, cost: parseFloat(cost), km: odometer, date: new Date().toLocaleDateString() });
+        saveData();
+        render();
+    }
+
+    function undo() { if (history.length === 0) return; redoStack.push(history.pop()); saveData(); render(); }
+    function redo() { if (redoStack.length === 0) return; history.push(redoStack.pop()); saveData(); render(); }
+    function saveData() { localStorage.setItem('spl_hist', JSON.stringify(history)); }
+
+    function render() {
+        const partList = document.getElementById('partList');
+        const notifBanner = document.getElementById('notifBanner');
+        partList.innerHTML = '<h3>🔍 Bike Health Status</h3>';
+        let showAlert = false;
+        const fullConfig = [...defaultConfig, ...customConfigs];
+        
+        fullConfig.forEach((item, idx) => {
+            const logs = [...history].reverse().find(h => h.task.toLowerCase().includes(item.task.toLowerCase()));
+            const lastDoneAt = logs ? logs.km : 0;
+            const distance = odometer - lastDoneAt;
+            const kmLeft = item.interval - (distance % item.interval);
+            const percent = Math.max(0, (kmLeft / item.interval) * 100);
+            if(kmLeft <= 200) showAlert = true;
+
+            partList.innerHTML += `
+                <div class="part-row">
+                    <div class="part-header">
+                        <span>${item.task}</span>
+                        <span style="color: ${kmLeft <= 200 ? 'var(--danger)' : 'var(--text-dim)'}">${kmLeft <= 0 ? 'DUE' : kmLeft + ' KM left'}</span>
+                    </div>
+                    <span class="part-instr">${item.instr}</span>
+                    <span class="part-price">${item.price}</span>
+                    <div class="progress-bg"><div class="progress-fill" style="width: ${percent}%; background: ${kmLeft <= 200 ? 'var(--danger)' : item.color}"></div></div>
+                    <button class="details-btn" onclick="toggleDetails(${idx})">More Details ⌄</button>
+                    <div id="details-${idx}" class="details-content">${item.how}</div>
+                </div>`;
+        });
+        notifBanner.style.display = showAlert ? 'block' : 'none';
+        document.getElementById('totalCostDisplay').innerText = `₹ ${history.reduce((a, b) => a + b.cost, 0).toLocaleString('en-IN')}`;
+        document.getElementById('undoBtn').disabled = history.length === 0;
+        document.getElementById('redoBtn').disabled = redoStack.length === 0;
+        
+        // Refresh history list
+        const histDiv = document.getElementById('historyList');
+        histDiv.innerHTML = '';
+        [...history].reverse().forEach(h => {
+            histDiv.innerHTML += `<div class="history-item"><div><div class="hist-task">${h.task}</div><div class="hist-meta">${h.date} • At ${h.km} km</div></div><div class="price">₹${h.cost}</div></div>`;
+        });
+    }
+    render();
+
+    function requestNotificationPermission() {
+        if (!("Notification" in window)) return;
+        Notification.requestPermission().then(p => { if (p === "granted") alert("Notifications Enabled!"); });
+    }
+</script>
+</body>
+</html>
